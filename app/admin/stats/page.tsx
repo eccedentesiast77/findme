@@ -1,65 +1,37 @@
-import fs from "fs";
-import path from "path";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function StatsPage() {
-  const filePath = path.join(
-    process.cwd(),
-    "data",
-    "searches.json"
-  );
+  const [stats, setStats] = useState<any[]>([]);
 
-  const searches = JSON.parse(
-    fs.readFileSync(
-      filePath,
-      "utf8"
-    )
-  );
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const stats: any = {};
+  async function loadData() {
+    const res = await fetch("/api/stats-detail");
+    const data = await res.json();
 
-  searches.forEach(
-    (item: any) => {
-      stats[item.keyword] =
-        (stats[item.keyword] || 0)
-        + 1;
-    }
-  );
-
-  const result =
-    Object.entries(stats)
-      .sort(
-        (a: any, b: any) =>
-          b[1] - a[1]
-      );
+    setStats(data);
+  }
 
   return (
-    <div
-      style={{
-        padding: "40px",
-      }}
-    >
-      <h1>
-        Statistik Pencarian
-      </h1>
+    <div style={{ padding: "40px" }}>
+      <h1>Statistik Pencarian</h1>
 
       <br />
 
-      {result.map(
-        (
-          item: any,
-          index
-        ) => (
-          <div
-            key={index}
-            style={{
-              marginBottom:
-                "10px",
-            }}
-          >
-            {item[0]} : {item[1]}
-          </div>
-        )
-      )}
+      {stats.map((item, index) => (
+        <div
+          key={index}
+          style={{
+            marginBottom: "10px",
+          }}
+        >
+          {item.keyword} : {item.total}
+        </div>
+      ))}
     </div>
   );
 }
