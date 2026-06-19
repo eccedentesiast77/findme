@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "keyword": "bola138",
+    "title": "Bola138 Login Terbaru",
+    "url": "https://bit.ly/AlterBola138",
+    "description": "Website resmi Bola138 terbaru"
+  },
+  {
+    "id": 2,
+    "keyword": "surya88",
+    "title": "Surya88 Official",
+    "url": "https://bit.ly/SURYA88",
+    "description": "Website resmi Surya88 terbaru"
+  },
+  {
+    "id": 3,
+    "keyword": "mabar88",
+    "title": "Mabar88 Official",
+    "url": "https://bit.ly/Mabar88",
+    "description": "Website resmi Mabar88 terbaru"
+  },
+  {
+    "id": 4,
+    "keyword": "pasar88",
+    "title": "Pasar88 Official",
+    "url": "https://bit.ly/linkPasar88",
+    "description": "Website resmi Pasar88 terbaru"
+  },
+  {
+    "id": 5,
+    "keyword": "maxwin88",
+    "title": "maxwin88 Official",
+    "url": "https://bit.ly/MaXwin88",
+    "description": "Website resmi maxwin88 terbaru"
+  },
+  {
+    "id": 6,
+    "keyword": "planet77",
+    "title": "Planet77 Official",
+    "url": "https://bit.ly/Planet77",
+    "description": "Website resmi Planet77 terbaru"
+  },
+  {
+    "id": 7,
+    "keyword": "batik88",
+    "title": "baba",
+    "url": "abba",
+    "description": "abba",
+    "featured": false
+  }
+]
