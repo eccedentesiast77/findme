@@ -5,7 +5,10 @@ export async function POST(req: Request) {
   try {
     const { id } = await req.json();
 
-    console.log("ID DITERIMA =", id);
+    console.log(
+      "ID DITERIMA =",
+      id
+    );
 
     const filePath = path.join(
       process.cwd(),
@@ -22,22 +25,12 @@ export async function POST(req: Request) {
       jsonData
     );
 
-    console.log(
-      "DATA SEBELUM HAPUS =",
-      websites
-    );
-
     const updatedWebsites =
       websites.filter(
         (item: any) =>
           Number(item.id) !==
           Number(id)
       );
-
-    console.log(
-      "DATA SESUDAH HAPUS =",
-      updatedWebsites
-    );
 
     fs.writeFileSync(
       filePath,
