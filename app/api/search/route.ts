@@ -11,6 +11,12 @@ export async function POST(req: Request) {
       "websites.json"
     );
 
+    const searchPath = path.join(
+      process.cwd(),
+      "data",
+      "searches.json"
+    );
+
     const websites = JSON.parse(
       fs.readFileSync(
         websitePath,
@@ -26,6 +32,44 @@ export async function POST(req: Request) {
       return Response.json({
         results: [],
       });
+    }
+
+    // Simpan statistik pencarian
+    try {
+      const searches = JSON.parse(
+        fs.readFileSync(
+          searchPath,
+          "utf8"
+        )
+      );
+
+      searches.push({
+        keyword,
+        date: new Date().toISOString(),
+      });
+
+      fs.writeFileSync(
+        searchPath,
+        JSON.stringify(
+          searches,
+          null,
+          2
+        )
+      );
+    } catch {
+      fs.writeFileSync(
+        searchPath,
+        JSON.stringify(
+          [
+            {
+              keyword,
+              date: new Date().toISOString(),
+            },
+          ],
+          null,
+          2
+        )
+      );
     }
 
     let results = websites.filter(
@@ -65,8 +109,7 @@ export async function POST(req: Request) {
     return Response.json(
       {
         results: [],
-        error:
-          "Terjadi kesalahan",
+        error: "Terjadi kesalahan",
       },
       {
         status: 500,

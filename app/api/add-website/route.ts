@@ -25,7 +25,18 @@ export async function POST(req: Request) {
     jsonData
   );
 
+  const newId =
+    websites.length > 0
+      ? Math.max(
+          ...websites.map(
+            (item: any) =>
+              item.id || 0
+          )
+        ) + 1
+      : 1;
+
   websites.push({
+    id: newId,
     keyword,
     title,
     url,

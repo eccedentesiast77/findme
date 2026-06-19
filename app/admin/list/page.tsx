@@ -6,154 +6,365 @@ export default function AdminList() {
   const [websites, setWebsites] = useState<any[]>([]);
 
   async function loadData() {
-    const res = await fetch("/api/list-website");
-    const data = await res.json();
+    try {
+      const res = await fetch(
+        "/api/list-website"
+      );
 
-    setWebsites(data);
+      const data = await res.json();
+
+      console.log(
+        "WEBSITES =",
+        data
+      );
+
+      setWebsites(
+        Array.isArray(data)
+          ? data
+          : []
+      );
+    } catch (error) {
+      console.error(
+        "LOAD ERROR =",
+        error
+      );
+    }
   }
 
   useEffect(() => {
     const isLogin =
-      localStorage.getItem("admin_login");
+      localStorage.getItem(
+        "admin_login"
+      );
 
     if (!isLogin) {
-      window.location.href = "/admin";
+      window.location.href =
+        "/admin";
       return;
     }
 
     loadData();
   }, []);
 
-  async function handleDelete(index: number) {
-    await fetch(
-      "/api/delete-website",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          index,
-        }),
-      }
+  async function handleDelete(
+    id: number,
+    keyword: string
+  ) {
+    alert(
+      `ID = ${id}\nKeyword = ${keyword}`
     );
 
-    loadData();
+    const confirmDelete =
+      window.confirm(
+        `Apakah kamu yakin ingin menghapus "${keyword}" ?`
+      );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        "/api/delete-website",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            id,
+          }),
+        }
+      );
+
+      const data =
+        await res.json();
+
+      console.log(
+        "DELETE RESPONSE =",
+        data
+      );
+
+      if (data.success) {
+        alert(
+          `"${keyword}" berhasil dihapus`
+        );
+
+        loadData();
+      } else {
+        alert(
+          "Gagal menghapus data"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Terjadi error saat menghapus data"
+      );
+    }
   }
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Daftar Website</h1>
-
-      <br />
-
-      <button
-        onClick={() => {
-          window.location.href =
-            "/admin/add";
-        }}
+    <div
+      style={{
+        maxWidth: "1200px",
+        margin: "30px auto",
+        background: "#fff",
+        padding: "30px",
+        borderRadius: "15px",
+        boxShadow:
+          "0 4px 20px rgba(0,0,0,0.1)",
+      }}
+    >
+      <h1
         style={{
-          backgroundColor: "green",
-          color: "white",
-          border: "none",
-          padding: "10px 20px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginRight: "10px",
+          marginBottom: "20px",
         }}
       >
-        Tambah Website
-      </button>
+        📋 Daftar Website
+      </h1>
 
-      <button
-        onClick={() => {
-          localStorage.removeItem(
-            "admin_login"
-          );
-
-          window.location.href =
-            "/admin";
-        }}
+      <div
         style={{
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-          padding: "10px 20px",
-          borderRadius: "4px",
-          cursor: "pointer",
+          marginBottom: "20px",
         }}
       >
-        Logout
-      </button>
+        <button
+          onClick={() => {
+            window.location.href =
+              "/admin/add";
+          }}
+          style={{
+            background:
+              "#16a34a",
+            color: "white",
+            border: "none",
+            padding:
+              "10px 18px",
+            borderRadius:
+              "8px",
+            cursor: "pointer",
+            fontWeight:
+              "bold",
+            marginRight:
+              "10px",
+          }}
+        >
+          ➕ Tambah Website
+        </button>
 
-      <br />
-      <br />
+        <button
+          onClick={() => {
+            localStorage.removeItem(
+              "admin_login"
+            );
+
+            window.location.href =
+              "/admin";
+          }}
+          style={{
+            background:
+              "#dc2626",
+            color: "white",
+            border: "none",
+            padding:
+              "10px 18px",
+            borderRadius:
+              "8px",
+            cursor: "pointer",
+            fontWeight:
+              "bold",
+          }}
+        >
+          🚪 Logout
+        </button>
+      </div>
+
+      <h3>
+        Total Website:{" "}
+        {websites.length}
+      </h3>
 
       <table
-        border={1}
-        cellPadding={10}
         style={{
-          marginTop: "20px",
-          borderCollapse: "collapse",
           width: "100%",
+          borderCollapse:
+            "collapse",
+          marginTop: "20px",
         }}
       >
         <thead>
-          <tr>
-            <th>Keyword</th>
-            <th>Title</th>
-            <th>URL</th>
-            <th>Action</th>
+          <tr
+            style={{
+              background:
+                "#2563eb",
+              color: "white",
+            }}
+          >
+            <th
+              style={{
+                padding:
+                  "12px",
+              }}
+            >
+              No
+            </th>
+
+            <th
+              style={{
+                padding:
+                  "12px",
+              }}
+            >
+              Keyword
+            </th>
+
+            <th
+              style={{
+                padding:
+                  "12px",
+              }}
+            >
+              Title
+            </th>
+
+            <th
+              style={{
+                padding:
+                  "12px",
+              }}
+            >
+              URL
+            </th>
+
+            <th
+              style={{
+                padding:
+                  "12px",
+              }}
+            >
+              Action
+            </th>
           </tr>
         </thead>
 
         <tbody>
-          {websites.map((item, index) => (
-            <tr key={index}>
-              <td>{item.keyword}</td>
-              <td>{item.title}</td>
-              <td>{item.url}</td>
-
-              <td>
-                <button
-                  onClick={() =>
-                    (window.location.href =
-                      `/admin/edit?index=${index}`)
-                  }
+          {websites.map(
+            (item, index) => (
+              <tr
+                key={index}
+                style={{
+                  borderBottom:
+                    "1px solid #ddd",
+                }}
+              >
+                <td
                   style={{
-                    backgroundColor:
-                      "blue",
-                    color: "white",
-                    border: "none",
-                    padding: "6px 12px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
+                    padding:
+                      "12px",
                   }}
                 >
-                  Edit
-                </button>
+                  {index + 1}
+                </td>
 
-                <button
-                  onClick={() =>
-                    handleDelete(index)
-                  }
+                <td
                   style={{
-                    backgroundColor:
-                      "red",
-                    color: "white",
-                    border: "none",
-                    padding: "6px 12px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginLeft: "8px",
+                    padding:
+                      "12px",
+                    fontWeight:
+                      "bold",
                   }}
                 >
-                  Hapus
-                </button>
-              </td>
-            </tr>
-          ))}
+                  {item.keyword}
+                </td>
+
+                <td
+                  style={{
+                    padding:
+                      "12px",
+                  }}
+                >
+                  {item.title}
+                </td>
+
+                <td
+                  style={{
+                    padding:
+                      "12px",
+                  }}
+                >
+                  <a
+                    href={
+                      item.url
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.url}
+                  </a>
+                </td>
+
+                <td
+                  style={{
+                    padding:
+                      "12px",
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      (window.location.href =
+                        `/admin/edit?index=${index}`)
+                    }
+                    style={{
+                      background:
+                        "#2563eb",
+                      color:
+                        "white",
+                      border:
+                        "none",
+                      padding:
+                        "8px 14px",
+                      borderRadius:
+                        "6px",
+                      cursor:
+                        "pointer",
+                    }}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleDelete(
+                        item.id,
+                        item.keyword
+                      )
+                    }
+                    style={{
+                      background:
+                        "#dc2626",
+                      color:
+                        "white",
+                      border:
+                        "none",
+                      padding:
+                        "8px 14px",
+                      borderRadius:
+                        "6px",
+                      cursor:
+                        "pointer",
+                      marginLeft:
+                        "8px",
+                    }}
+                  >
+                    Hapus
+                  </button>
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
     </div>

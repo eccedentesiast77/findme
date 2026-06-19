@@ -2,29 +2,68 @@ import fs from "fs";
 import path from "path";
 
 export async function POST(req: Request) {
-  const { index } = await req.json();
+  try {
+    const { id } = await req.json();
 
-  const filePath = path.join(
-    process.cwd(),
-    "data",
-    "websites.json"
-  );
+    console.log("ID DITERIMA =", id);
 
-  const jsonData = fs.readFileSync(
-    filePath,
-    "utf8"
-  );
+    const filePath = path.join(
+      process.cwd(),
+      "data",
+      "websites.json"
+    );
 
-  const websites = JSON.parse(jsonData);
+    const jsonData = fs.readFileSync(
+      filePath,
+      "utf8"
+    );
 
-  websites.splice(index, 1);
+    const websites = JSON.parse(
+      jsonData
+    );
 
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(websites, null, 2)
-  );
+    console.log(
+      "DATA SEBELUM HAPUS =",
+      websites
+    );
 
-  return Response.json({
-    success: true,
-  });
+    const updatedWebsites =
+      websites.filter(
+        (item: any) =>
+          Number(item.id) !==
+          Number(id)
+      );
+
+    console.log(
+      "DATA SESUDAH HAPUS =",
+      updatedWebsites
+    );
+
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify(
+        updatedWebsites,
+        null,
+        2
+      )
+    );
+
+    return Response.json({
+      success: true,
+      deletedId: id,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return Response.json(
+      {
+        success: false,
+        error:
+          "Gagal menghapus data",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
